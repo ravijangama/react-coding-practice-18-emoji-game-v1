@@ -1,0 +1,15 @@
+/* Write your code here. */
+.emoji-app-container {
+  background-image: linear-gradient(to bottom, #9796f0, #fbc7d4);
+}
+.emojis-bg-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+.emojis-ul-container {
+  width: 90%;
+  display: flex;
+  flex-wrap: wrap;
+}
