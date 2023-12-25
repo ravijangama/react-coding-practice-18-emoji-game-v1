@@ -1,7 +1,8 @@
 // Write your code here.
 import './index.css'
 
-const NavBar = () => {
+const NavBar = props => {
+  const {score, topScore, displayScore} = props
   const jsxElement = (
     <nav className="nav-bg-container">
       <div className="emoji-game-logo">
@@ -12,10 +13,12 @@ const NavBar = () => {
         />
         <h1 className="logo-image-desc">Emoji Game</h1>
       </div>
-      <div className="score-container">
-        <p className="scores-info">Score: 0</p>
-        <p className="scores-info">Top Score: 0</p>
-      </div>
+      {!displayScore && (
+        <div className="score-container">
+          <p className="scores-info">Score: {score}</p>
+          <p className="scores-info">Top Score: {topScore}</p>
+        </div>
+      )}
     </nav>
   )
   return jsxElement
