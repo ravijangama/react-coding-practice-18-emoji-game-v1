@@ -14,20 +14,42 @@ const shuffledEmojisList = () => {
 import {Component} from 'react'
 import EmojiCard from '../EmojiCard'
 import NavBar from '../NavBar'
+import WinOrLoseCard from '../WinOrLoseCard'
 import './index.css'
 
 class EmojiGame extends Component {
-  state = {scoreCount: 0, prevId: Math.floor(Math.random() * 10), isWon: false}
+  state = {clickedEmojisList: [], topScore: 0, isResult: false}
+
+  scoreToZero = () => {
+    this.setState({
+      clickedEmojisList: [],
+      isResult: false,
+    })
+  }
+
+  finalTopScore = currentScore => {
+    const {topScore} = this.state
+    let newScore = topScore
+    if (currentScore > topScore) {
+      newScore = currentScore
+    }
+    this.setState({topScore: newScore, isResult: true})
+  }
 
   increaseScore = emojiId => {
-    const {scoreCount, prevId, isWon} = this.state
-    if (prevId !== emojiId) {
-      if (scoreCount < 12) {
-        this.setState(prevState => ({
-          scoreCount: prevState.scoreCount + 1,
-          prevId: emojiId,
-        }))
+    const {emojisList} = this.props
+    const {clickedEmojisList} = this.state
+    const isEmojiPresent = clickedEmojisList.includes(emojiId)
+    const clickedEmojisLength = clickedEmojisList.length
+    if (isEmojiPresent) {
+      this.finalTopScore(clickedEmojisLength)
+    } else {
+      if (emojisList.length - 1 === clickedEmojisList.length) {
+        this.finalTopScore(emojisList.length)
       }
+      this.setState(prevState => ({
+        clickedEmojisList: [...prevState.clickedEmojisList, emojiId],
+      }))
     }
   }
 
@@ -37,20 +59,25 @@ class EmojiGame extends Component {
   }
 
   render() {
-    const {prevId} = this.state
+    const {clickedEmojisList, topScore, isResult} = this.state
+    const score = clickedEmojisList.length
     const shuffledEmojisList = this.shuffledEmojisList()
     const jsxElement = (
       <div className="emoji-app-container">
-        <NavBar />
+        <NavBar score={score} topScore={topScore} displayScore={isResult} />
         <div className="emojis-bg-container">
           <ul className="emojis-ul-container">
-            {shuffledEmojisList.map(eachEmoji => (
-              <EmojiCard
-                emojiDetails={eachEmoji}
-                key={eachEmoji.id}
-                clickEmoji={this.increaseScore}
-              />
-            ))}
+            {!isResult &&
+              shuffledEmojisList.map(eachEmoji => (
+                <EmojiCard
+                  emojiDetails={eachEmoji}
+                  key={eachEmoji.id}
+                  clickEmoji={this.increaseScore}
+                />
+              ))}
+            {isResult && (
+              <WinOrLoseCard score={score} resetScore={this.scoreToZero} />
+            )}
           </ul>
         </div>
       </div>
